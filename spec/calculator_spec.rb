@@ -68,6 +68,11 @@ describe Dentaku::Calculator do
     calculator.evaluate('fruit = "Apple"', :fruit => 'Apple').should be_true
   end
 
+  it 'should provide interface to save expression and evaluate it later' do
+    calculator.retain('(foo1 * 2) + SomeFoo2').should == [ :foo1, :SomeFoo2 ]
+    calculator.execute(:foo1 => 2, :SomeFoo2 => 3).should == 7
+  end
+
   it 'should raise error if identifier is not resolved' do
     expect { calculator.evaluate('fruit = "Apple"', :vegetable => 'Tomato') }.to raise_error Dentaku::UnresolvedIdentifier
   end

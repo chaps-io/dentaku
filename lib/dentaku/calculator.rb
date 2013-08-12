@@ -5,20 +5,32 @@ require 'dentaku/unresolved_identifier'
 
 module Dentaku
   class Calculator
-    attr_reader :result
+
+    attr_reader :result, :tokenizer
 
     def initialize
       clear
     end
 
-    def evaluate(expression, data={})
+    def tokenizer
       @tokenizer ||= Tokenizer.new
-      @tokens = @tokenizer.tokenize(expression)
+    end
 
+    def retain(expression)
+      @tokens = tokenizer.tokenize(expression)
+      @tokens.select{ |t| t.category == :identifier }.map(&:value).uniq
+    end
+
+    def execute(data={})
       store(data) do
         @evaluator ||= Evaluator.new
         @result = @evaluator.evaluate(replace_identifiers_with_values)
       end
+    end
+
+    def evaluate(expression, data={})
+      @tokens = tokenizer.tokenize(expression)
+      execute(data)
     end
 
     def memory(key=nil)
