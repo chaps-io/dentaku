@@ -68,6 +68,10 @@ describe Dentaku::Calculator do
     calculator.evaluate('fruit = "Apple"', :fruit => 'Apple').should be_true
   end
 
+  it 'should raise error if identifier is not resolved' do
+    expect { calculator.evaluate('fruit = "Apple"', :vegetable => 'Tomato') }.to raise_error Dentaku::UnresolvedIdentifier
+  end
+
   describe 'functions' do
     it 'should include IF' do
       calculator.evaluate('if (foo < 8, 10, 20)', :foo => 2).should eq(10)

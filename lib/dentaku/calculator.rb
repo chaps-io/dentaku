@@ -1,6 +1,7 @@
 require 'dentaku/evaluator'
 require 'dentaku/token'
 require 'dentaku/tokenizer'
+require 'dentaku/unresolved_identifier'
 
 module Dentaku
   class Calculator
@@ -58,7 +59,8 @@ module Dentaku
     def replace_identifiers_with_values
       @tokens.map do |token|
         if token.is?(:identifier)
-          value = memory(token.value)
+          value = memory(token.value) 
+          raise UnresolvedIdentifier.new(token) if value.nil?
           type  = type_for_value(value)
 
           Token.new(type, value)
